@@ -39,16 +39,16 @@ form.addEventListener("submit", function (e) {
   let condition = this.querySelectorAll("#checkbox1");
 
   //Check input value and add class error
-  verifyLength(names, 2);
-  onlyLetters(names);
   verifyLength(email, 3);
   verifyLength(number, 1);
   verifyLength(date, 8, 10);
   verifyChecked(radio);
   verifyChecked(condition);
+  verifyLength(names, 2);
+  onlyLetters(names);
 
   //Check result form
-  if (this.querySelectorAll(".errorForm").length > 0) {
+  if (this.querySelectorAll("[data-error-visible = 'true']").length > 0) {
     e.preventDefault();
     return false;
   } else {
@@ -62,9 +62,9 @@ function verifyLength(elements, number, number2 = 100) {
   elements.forEach((element) => {
     if (element.value.length >= number && element.value.length <= number2) {
       array.push(element);
-      classError(element, "remove");
+      errorVisible(element, false);
     } else {
-      classError(element, "add");
+      errorVisible(element, true);
     }
   });
   return array.length === elements.length;
@@ -77,9 +77,9 @@ function onlyLetters(elements) {
   elements.forEach((element) => {
     if (regex.test(element.value)) {
       array.push(element);
-      classError(element, "remove");
+      errorVisible(element, false);
     } else {
-      classError(element, "add");
+      errorVisible(element, true);
     }
   });
   return array.length === elements.length;
@@ -94,15 +94,15 @@ function verifyChecked(elements) {
     }
   });
   if (array.length === 1) {
-    classError(elements[0], "remove");
+    errorVisible(elements[0], false);
     return true;
   } else {
-    classError(elements[0], "add");
+    errorVisible(elements[0], true);
     return false;
   }
 }
 
-//add or remove class errorForm
-function classError(element, action) {
-  element.parentNode.classList[action]("errorForm");
+// change data-error-visible value
+function errorVisible(element, action) {
+  element.parentNode.dataset.errorVisible = action;
 }
