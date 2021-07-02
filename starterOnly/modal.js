@@ -8,28 +8,38 @@ function editNav() {
 }
 
 // DOM Elements
-const modalbg = document.querySelector(".bground");
-const modalBtn = document.querySelectorAll(".modal-btn");
+const modalForm = document.querySelector(".modal-form");
+const modalConfirmation = document.querySelector(".modal-confirmation");
+const modalBtn = document.querySelectorAll(".modal-btn:not(.btn-confirm)");
+const confirmBtn = document.querySelector(".btn-confirm");
 const formData = document.querySelectorAll(".formData");
-const modalCloseBtn = document.querySelector(".modal-close-btn");
+const modalCloseBtn = document.querySelectorAll(".modal-close-btn");
 const form = document.forms["reserve"];
 
 // launch modal event
-modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
-modalCloseBtn.addEventListener("click", closeModal);
+modalBtn.forEach((btn) =>
+  btn.addEventListener("click", () => launchModal(modalForm))
+);
+
+confirmBtn.addEventListener("click", (e) => closeModal(e.target));
+
+modalCloseBtn.forEach((btn) =>
+  btn.addEventListener("click", (e) => closeModal(e.target))
+);
 
 // launch modal form
-function launchModal() {
-  modalbg.style.display = "block";
+function launchModal(modal) {
+  modal.style.display = "block";
 }
 
 // close modal form
-function closeModal() {
-  modalbg.style.display = "none";
+function closeModal(value) {
+  value.closest(".bground").style.display = "none";
 }
 
 // event submit form
 form.addEventListener("submit", function (e) {
+  e.preventDefault();
   //Get all input
   let names = this.querySelectorAll("input[type='text']");
   let email = this.querySelectorAll("input[type='email']");
@@ -49,9 +59,11 @@ form.addEventListener("submit", function (e) {
 
   //Check result form
   if (this.querySelectorAll("[data-error-visible = 'true']").length > 0) {
-    e.preventDefault();
     return false;
   } else {
+    launchModal(modalConfirmation);
+    closeModal(modalForm);
+    this.reset();
     return true;
   }
 });
