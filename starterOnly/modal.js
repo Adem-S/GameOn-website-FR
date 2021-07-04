@@ -29,11 +29,14 @@ modalCloseBtn.forEach((btn) =>
 
 // launch modal form
 function launchModal(modal) {
+  window.scroll(0, 0);
+  document.documentElement.style.overflow = "hidden";
   modal.style.display = "block";
 }
 
 // close modal form
 function closeModal(value) {
+  document.documentElement.style.overflow = "visible";
   value.closest(".bground").style.display = "none";
 }
 
@@ -61,8 +64,8 @@ form.addEventListener("submit", function (e) {
   if (this.querySelectorAll("[data-error-visible = 'true']").length > 0) {
     return false;
   } else {
-    launchModal(modalConfirmation);
     closeModal(modalForm);
+    launchModal(modalConfirmation);
     this.reset();
     return true;
   }
