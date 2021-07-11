@@ -16,6 +16,12 @@ const formData = document.querySelectorAll(".formData");
 const modalCloseBtn = document.querySelectorAll(".modal-close-btn");
 const form = document.forms["reserve"];
 
+//regex
+let regexEmail =
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+let regexDate = /^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/;
+let regexName = /^[-'a-zA-ZÀ-ÖØ-öø-ÿ]+$/;
+
 // launch modal event
 modalBtn.forEach((btn) =>
   btn.addEventListener("click", () => launchModal(modalForm))
@@ -44,21 +50,20 @@ function closeModal(value) {
 form.addEventListener("submit", function (e) {
   e.preventDefault();
   //Get all input
-  let names = this.querySelectorAll("input[type='text']");
-  let email = this.querySelectorAll("input[type='email']");
+  let names = this.querySelectorAll("input[name='names']");
+  let email = this.querySelectorAll("input[name='email']");
   let number = this.querySelectorAll("input[type='number']");
   let radio = this.querySelectorAll("input[type='radio']");
-  let date = this.querySelectorAll("input[type='date']");
+  let date = this.querySelectorAll("input[name='birthdate']");
   let condition = this.querySelectorAll("#checkbox1");
 
   //Check input value and add class error
-  verifyLength(email, 3);
   verifyLength(number, 1);
-  verifyLength(date, 8, 10);
   verifyChecked(radio);
   verifyChecked(condition);
-  verifyLength(names, 2);
-  onlyLetters(names);
+  verifyLength(names, 2) ? verifyValue(names, regexName) : null;
+  verifyValue(email, regexEmail);
+  verifyValue(date, regexDate);
 
   //Check result form
   if (this.querySelectorAll("[data-error-visible = 'true']").length > 0) {
@@ -85,10 +90,9 @@ function verifyLength(elements, number, number2 = 100) {
   return array.length === elements.length;
 }
 
-// check if input contains only letters
-function onlyLetters(elements) {
+// check if value input is valid
+function verifyValue(elements, regex) {
   let array = [];
-  let regex = /^[-'a-zA-ZÀ-ÖØ-öø-ÿ]+$/;
   elements.forEach((element) => {
     if (regex.test(element.value)) {
       array.push(element);
